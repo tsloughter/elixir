@@ -106,4 +106,4 @@ if [ -z "$ERL_PATH" ]; then
   fi
 fi
 
-exec "$ERL_PATH" -pa "$SCRIPT_PATH"/../lib/*/ebin $ELIXIR_ERL_OPTIONS $ERL -extra "$@"
+exec "$ERL_PATH" -pa "$SCRIPT_PATH"/../_build/default/lib/*/ebin $ELIXIR_ERL_OPTIONS $ERL -extra "$@"

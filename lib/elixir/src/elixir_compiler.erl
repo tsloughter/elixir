@@ -1,6 +1,6 @@
 -module(elixir_compiler).
 -export([get_opt/1, string/2, quoted/2, file/1, file/2, file_to_path/2]).
--export([core/0, module/4, eval_forms/3]).
+-export([core/1, core/0, module/4, eval_forms/3]).
 -include("elixir.hrl").
 
 %% Public API
@@ -214,16 +214,19 @@ no_auto_import() ->
 
 %% CORE HANDLING
 
+core(_) ->
+  core().
+
 core() ->
   {ok, _} = application:ensure_all_started(elixir),
-  Update = fun(Old) -> maps:merge(Old, #{docs => false, internal => true}) end,
+  Update = fun(Old) -> maps:merge(Old, #{docs => false, internal => true, ignore_module_conflict => true}) end,
   _ = elixir_config:update(compiler_options, Update),
   [core_file(File) || File <- core_main()].
 
 core_file(File) ->
   try
     Lists = file(File),
-    _ = [binary_to_path(X, "lib/elixir/ebin") || X <- Lists],
+    _ = [binary_to_path(X, "_build/default/lib/elixir/ebin") || X <- Lists],
     io:format("Compiled ~ts~n", [File])
   catch
     Kind:Reason ->
